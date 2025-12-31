@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>A Little Letter 💜</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400&family=Dancing+Script:wght@600&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg-dark: radial-gradient(circle at top, #3b0a2a, #12000d);
+      --paper: #fff7fb;
+      --ink: #3b144f;
+      --purple: #b388ff;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: "Poppins", sans-serif;
+      background: var(--bg-dark);
+      min-height: 100vh;
+    }
+
+    /* LOCK */
+    .lock {
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .lock-card {
+      background: rgba(255,255,255,0.9);
+      padding: 24px;
+      width: 90%;
+      max-width: 360px;
+      border-radius: 16px;
+      text-align: center;
+    }
+
+    .lock-card h1 { margin-bottom: 8px; }
+
+    .lock-card input {
+      width: 100%;
+      padding: 12px;
+      margin-top: 12px;
+      border-radius: 999px;
+      border: 1px solid #ddd;
+      text-align: center;
+    }
+
+    .lock-card button {
+      margin-top: 12px;
+      width: 100%;
+      padding: 12px;
+      border-radius: 999px;
+      border: none;
+      background: var(--purple);
+      color: white;
+      cursor: pointer;
+    }
+
+    .error {
+      display: block;
+      margin-top: 8px;
+      color: #b04b7a;
+    }
+
+    /* LETTER VIEW */
+    .letter-view {
+      display: none;
+      min-height: 100vh;
+      padding: 32px 16px;
+      justify-content: center;
+      align-items: flex-start;
+      position: relative;
+    }
+
+    .paper {
+      background: var(--paper);
+      max-width: 420px;
+      width: 100%;
+      padding: 28px;
+      border-radius: 18px;
+      color: var(--ink);
+      line-height: 1.7;
+      box-shadow: 0 30px 60px rgba(0,0,0,0.4);
+      animation: rise 0.8s ease;
+    }
+
+    .paper p { margin-bottom: 16px; }
+
+    .signature {
+      font-family: "Dancing Script", cursive;
+      font-size: 20px;
+      color: var(--purple);
+    }
+
+    .reset {
+      margin-top: 16px;
+      background: none;
+      border: none;
+      color: #8b5cf6;
+      cursor: pointer;
+    }
+
+    /* HEARTS */
+    .hearts {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+
+    .heart {
+      position: absolute;
+      bottom: 0;
+      width: 14px;
+      height: 14px;
+      background: linear-gradient(45deg, #ffb3ec, #c084fc);
+      transform: rotate(45deg);
+      animation: floatUp 4s linear forwards;
+    }
+
+    .heart::before,
+    .heart::after {
+      content: "";
+      position: absolute;
+      width: 14px;
+      height: 14px;
+      background: inherit;
+      border-radius: 50%;
+    }
+
+    .heart::before { top: -7px; left: 0; }
+    .heart::after  { left: 7px; top: 0; }
+
+    @keyframes floatUp {
+      from { transform: translateY(0) rotate(45deg); opacity: 1; }
+      to   { transform: translateY(-120vh) rotate(45deg); opacity: 0; }
+    }
+
+    @keyframes rise {
+      from { transform: translateY(40px); opacity: 0; }
+      to   { transform: translateY(0); opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- LOCK SCREEN -->
+  <section class="lock" id="lock">
+    <div class="lock-card">
+      <h1>A little letter for you 💜</h1>
+      <p>It’s the day when we first time konwn each other.</p>
+
+      <input id="keyInput" placeholder="DD-MM-YYYY" maxlength="10">
+      <button onclick="unlock()">Open the letter</button>
+
+      <span class="error" id="error"></span>
+    </div>
+  </section>
+
+  <!-- LETTER -->
+  <section class="letter-view" id="letterView">
+    <div class="hearts" id="hearts"></div>
+
+    <div class="paper">
+      <p>Tuu ekdamach unexpected aalas pihuu — expected ch navta aasa koni tari yeela.</p>
+
+      <p>
+        I really admire you, but not just for who you are —<br>
+        what I admire the most is <em>tuza thought process</em>.
+      </p>
+
+      <p>
+        Chotya chotya goshtinna importance dena,<br>
+        a little bit of craziness,<br>
+        and the softness you show.<br>
+        says more about you than words ever could.
+      </p>
+
+      <p>
+        I may not always know how to express myself perfectly,<br>
+        and sometimes I struggle to say things the right way.
+      </p>
+
+      <p>
+        But there’s one thing I want you to remember — always.
+      </p>
+
+      <p>
+        If you ever feel alone,<br>
+        or if a day comes when you think nobody truly cares —<br>
+        know this:
+      </p>
+
+      <p><strong>I’m still here.</strong><br>Without conditions.</p>
+
+      <p class="signature">—🤍 Akhilesh</p>
+
+      <button class="reset" onclick="reset()">Seal again</button>
+    </div>
+  </section>
+
+  <script>
+    const correctKey = "05-03-2025";
+
+    function unlock() {
+      const input = document.getElementById("keyInput").value.trim();
+      const error = document.getElementById("error");
+
+      if (input === correctKey) {
+        document.getElementById("lock").style.display = "none";
+        document.getElementById("letterView").style.display = "flex";
+        spawnHearts();
+      } else {
+        error.textContent = "Not this one 💜";
+      }
+    }
+
+    function reset() {
+      document.getElementById("letterView").style.display = "none";
+      document.getElementById("lock").style.display = "flex";
+      document.getElementById("keyInput").value = "";
+    }
+
+    function spawnHearts() {
+      const container = document.getElementById("hearts");
+      for (let i = 0; i < 10; i++) {
+        const heart = document.createElement("div");
+        heart.className = "heart";
+        heart.style.left = Math.random() * 100 + "%";
+        heart.style.animationDelay = Math.random() * 2 + "s";
+        container.appendChild(heart);
+        setTimeout(() => heart.remove(), 5000);
+      }
+    }
+  </script>
+
+</body>
+</html>
